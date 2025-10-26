@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# === Runtimez OpenTelemetry Collector Installer ===
-# Supports: Ubuntu, Debian, RHEL, Amazon Linux, CentOS
+# === Runtimez OpenTelemetry Collector Installer (no tenant arg) ===
+# Works on: Ubuntu, Debian, RHEL, CentOS, Amazon Linux
 
-# --- Parse arguments ---
-TENANT_ID=""
+# --- Default values ---
 API_KEY=""
 ENDPOINT="https://ingest.runtimez.io:4317"
 OTEL_VER="0.116.0"
@@ -13,9 +12,9 @@ INSTALL_DIR="/opt/otelcol-contrib"
 CONFIG_PATH="/etc/runtimez/runtimez.yaml"
 SERVICE_FILE="/etc/systemd/system/runtimez-otel.service"
 
+# --- Parse arguments ---
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --tenant) TENANT_ID="$2"; shift 2;;
     --api-key) API_KEY="$2"; shift 2;;
     --endpoint) ENDPOINT="$2"; shift 2;;
     --version) OTEL_VER="$2"; shift 2;;
@@ -23,8 +22,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "$TENANT_ID" || -z "$API_KEY" ]]; then
-  echo "❌ Missing required arguments --tenant and --api-key"
+if [[ -z "$API_KEY" ]]; then
+  echo "❌ Missing required argument --api-key"
   exit 1
 fi
 
@@ -66,7 +65,6 @@ exporters:
   otlp:
     endpoint: ${ENDPOINT}
     headers:
-      X-Tenant-Id: "${TENANT_ID}"
       X-Api-Key: "${API_KEY}"
     compression: gzip
     tls:
@@ -110,9 +108,9 @@ sudo systemctl status runtimez-otel --no-pager || true
 
 echo ""
 echo "✅ Runtimez Collector installation complete!"
-echo "   Tenant: $TENANT_ID"
+echo "   API Key: ${API_KEY:0:8}********"
 echo "   Endpoint: $ENDPOINT"
 echo "   Config: $CONFIG_PATH"
 echo ""
-echo "Use 'journalctl -u runtimez-otel -f' to view live logs."
+echo "Use 'journalctl -u runtimez-otel -f' to view logs."
 echo "Use 'systemctl restart runtimez-otel' to restart the collector."
