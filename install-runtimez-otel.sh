@@ -33,6 +33,7 @@ case "$ARCH" in
 esac
 
 TMP_DIR=$(mktemp -d); cd "$TMP_DIR"
+echo "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VER}/otelcol-contrib_${OTEL_VER}_linux_${ARCH_TAG}.tar.gz"
 curl -sSL -o otelcol.tar.gz \
   "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VER}/otelcol-contrib_${OTEL_VER}_linux_${ARCH_TAG}.tar.gz"
 sudo mkdir -p "$INSTALL_DIR"
