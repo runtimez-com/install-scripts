@@ -73,13 +73,22 @@ exporters:
 
 processors:
   batch: {}
+  resource:
+    attributes:
+      - key: env
+        value: "dev"
+        action: upsert
+  resourcedetection/system:
+    detectors: ["system"]
+    system:
+      hostname_sources: ["os"]
 
 service:
   pipelines:
     # Host metrics → Runtimez
     metrics:
       receivers: [hostmetrics]
-      processors: [batch]
+      processors: [batch,resourcedetection/system,resource]
       exporters: [otlphttp]
 
     # Optional pipelines: enable if this VM will forward app telemetry too
