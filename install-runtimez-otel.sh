@@ -5,7 +5,7 @@ set -euo pipefail
 
 API_KEY=""
 BASE_URL="https://ingest.runtimez.io"
-OTEL_VER="0.116.0"
+OTEL_VER="0.138.0"
 INSTALL_DIR="/opt/otelcol-contrib"
 CONFIG_PATH="/etc/runtimez/runtimez.yaml"
 SERVICE_FILE="/etc/systemd/system/runtimez-otel.service"
@@ -47,12 +47,52 @@ receivers:
   hostmetrics:
     collection_interval: 30s
     scrapers:
-      cpu: {}
-      memory: {}
-      filesystem: {}
-      network: {}
+      cpu:
+        metrics:
+          system.cpu.frequency:
+            enabled: true
+          system.cpu.logical.count:
+            enabled: true
+          system.cpu.physical.count:
+            enabled: true
+          system.cpu.utilization:
+            enabled: true            
+      disk: {}
       load: {}
-      paging: {}
+      filesystem:
+        metrics:
+          system.filesystem.utilization:
+            enabled: true
+      network:
+        metrics:
+          system.network.conntrack.count:
+            enabled: true
+          system.network.conntrack.max:
+            enabled: true
+      memory:
+       metrics:
+        system.linux.memory.available:
+          enabled: true
+        system.linux.memory.dirty:
+          enabled: true
+        system.memory.limit:
+          enabled: true
+        system.memory.page_size:
+          enabled: true
+        system.memory.utilization:
+          enabled: true
+      paging:
+        metrics:
+          system.paging.utilization:
+            enabled: true
+      processes: {}
+      process: 
+        metrics:
+          process.context_switches:
+            enabled: true
+          process.cpu.utilization:
+            enabled: true
+      system: {}
   # Optional: receive app traces/logs on localhost and forward to Runtimez
   otlp:
     protocols:
