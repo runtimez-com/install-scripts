@@ -85,7 +85,11 @@ receivers:
         metrics:
           system.paging.utilization:
             enabled: true
-      processes: {}
+      processes:
+        mute_process_exe_error: true     # <-- stops your specific errors
+        mute_process_name_error: true    # helpful in some envs
+        mute_process_io_error: true      # optional
+        mute_process_user_error: true
       process: 
         metrics:
           process.context_switches:
