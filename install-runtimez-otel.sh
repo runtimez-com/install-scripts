@@ -144,8 +144,7 @@ service:
       processors: [batch]
       exporters: [otlphttp]
     profiles:
-      receivers: [otlp]
-      processors: [batch]
+      receivers: [otlp]      
       exporters: [otlphttp]  
 EOF
 
