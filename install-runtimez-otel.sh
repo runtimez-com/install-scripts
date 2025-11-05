@@ -111,6 +111,7 @@ exporters:
     traces_endpoint:  "${BASE_URL}/ingest/otlp/traces"
     metrics_endpoint: "${BASE_URL}/ingest/otlp/metrics"
     logs_endpoint:    "${BASE_URL}/ingest/otlp/logs"
+    profiles_endpoint: "${BASE_URL}/ingest/otlp/profiles"
 
 processors:
   batch: {}
@@ -142,6 +143,10 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlphttp]
+    profiles:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp]  
 EOF
 
 # --------- systemd unit ----------
@@ -152,7 +157,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/otelcol-contrib --config /etc/runtimez/runtimez.yaml
+ExecStart=/usr/local/bin/otelcol-contrib --config /etc/runtimez/runtimez.yaml --feature-gates=service.profilesSupport
 Restart=on-failure
 User=root
 LimitNOFILE=65535
